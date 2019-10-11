@@ -1,17 +1,19 @@
+#[derive(Copy, Clone)]
 struct Item {
     name:&'static str,
     weight:f32,
     value:f32,
     value_ratio:f32,
-    
 }
+
+
 
 fn main() {
     println!("knapsacking problem");
 
-    let _knapsack_max_weight = 400.0;
+    const KNAPSACK_MAX_WEIGHT:u32 = 400;
 
-    let mut items = vec!
+    let items = vec!
    [
         Item { name: "map",                    weight: 9f32,   value: 150f32, value_ratio:0.0 },
         Item { name: "compass",                weight: 13f32,  value: 35f32, value_ratio:0.0 },
@@ -37,55 +39,50 @@ fn main() {
         Item { name: "book",                   weight: 30f32,  value: 10f32, value_ratio:0.0 }
     ];
     
-    for item in &items {
-          println!("Item: {}", item.name);
-    }
+    println!("----knapsack items-----");
+    print_items(&items);
+    greedy_solution(items, KNAPSACK_MAX_WEIGHT)
+}
+
+fn greedy_solution(items:Vec<Item>, knapsack_max_weight : u32) {
+    println!("----Greedy Solution knapsack-----");
+    let mut greedy_items = items.to_vec();
     
-    sort_items(&mut items);
-    
-     println!("----knapsack items-----");
-    
-    for item in &items {
-          println!("Item: {}", item.name);
-    }
-    
-    
-    for i in 0..items.len() {
-        for k in 0..items.len() {
-            if items[i].value_ratio  > items[k].value_ratio {
-                items.swap(i,k);
+    for i in 0..greedy_items.len() {
+        for k in 0..greedy_items.len() {
+            if greedy_items[i].value_ratio  > greedy_items[k].value_ratio {
+                greedy_items.swap(i,k);
             }
         }
     }
     
-      println!("----sorted items-----");
-    
-    for item in &items {
-          println!("Item: {}", item.name);
-    }
-    
-    let mut knapsack_contents = Vec::new();
+    println!("----sorted items-----");
+    sort_items(&mut greedy_items);
+   
     let mut current_weight = 0.0;
-    
-    for item in &items {
-        if (current_weight + item.weight) < _knapsack_max_weight {
-            knapsack_contents.push(item);
+    let mut total_value = 0.0;
+   
+    println!("----Greedy Backpack-----");
+    for item in greedy_items {
+        if (current_weight + item.weight) < knapsack_max_weight as f32 {
             current_weight += item.weight;
+            total_value +=item.value;
+            println!("Item: {}", item.name);
         }
     }
-    
-    println!("----Greedy Solution knapsack-----");
-    let mut total_value = 0.0;
-    for item in &knapsack_contents {
-          println!("Item: {}", item.name);
-          total_value += item.value;
-    }
-    
+
+    println!("------------------------");
     println!("Total Value: {}", total_value);
     println!("Total Weight: {}", current_weight);
-    
-    
 }
+
+fn print_items(items: &[Item]) {
+     for item in items {
+          println!("Item: {}", item.name);
+    }
+}
+
+
 fn sort_items(items: &mut[Item]) {
     for i in items{
         i.value_ratio = i.value/i.weight;
