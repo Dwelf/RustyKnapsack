@@ -41,7 +41,7 @@ fn main() {
     
     println!("----knapsack items-----");
     print_items(&items);
-    greedy_solution(items, KNAPSACK_MAX_WEIGHT)
+    greedy_solution(items.clone(), KNAPSACK_MAX_WEIGHT)
 }
 
 fn greedy_solution(items:Vec<Item>, knapsack_max_weight : u32) {
